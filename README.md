@@ -4,6 +4,8 @@ Este desafío tiene como finalidad consumir una API para poder manejar diferente
    - **Consulta de libros como json**
    - **Consulta de libros como clase**
    - **Visualización del top 10**
+   - **Búsqueda de libros por nombres**
+   - **Generación de estadísticas de los datos**
 
 Para la realización de estas operaciones es necesario:
 1. **Consumo de API**: [https://gutendex.com/books](https://gutendex.com/books)
