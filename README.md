@@ -14,3 +14,4 @@ Para la realización de estas operaciones es necesario:
    - **ConvierteDatos interfaz**: Interfaz de modelado de datos.
    - **ConvierteDatos clase**: Clase para definir los atributos del modelo.
 3. **Creación de menú principal** para manejo de las consultas.
+4. **Creación de dao** para manejo de las funciones.
