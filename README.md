@@ -1,4 +1,4 @@
-## Desafío README
+## Desafío: consultando informaciones de libros
 
 Este desafío tiene como finalidad consumir una API para poder manejar diferentes operaciones tales como:
    - **Consulta de libros como json**
