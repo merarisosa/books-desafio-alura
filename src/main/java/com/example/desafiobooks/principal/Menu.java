@@ -10,6 +10,7 @@ public class Menu {
     boolean flag = false;
     Scanner scInt = new Scanner(System.in);
     Scanner scTxt = new Scanner(System.in);
+    Dao dao = new Dao();
 
     public void initMenu(){
         do{
@@ -28,8 +29,14 @@ public class Menu {
                     gettingStatistics();
                     break;
                 case 5:
+                    latestSearches();
+                    break;
+                case 0:
                     flag = true;
                     System.out.println("Gracias por usar The Books!");
+                    break;
+                default:
+                    System.out.println("Opción no válida");
                     break;
             }
         }while(!flag);
@@ -43,7 +50,8 @@ public class Menu {
         System.out.println("        2. Consulta el TOP 10 de libros más descargados");
         System.out.println("        3. Busca un libro por nombre");
         System.out.println("        4. Conoce las estadísticas de The Books!");
-        System.out.println("        5. Salir de The Books!");
+        System.out.println("        5. Consulta tu historial de búsquedas");
+        System.out.println("        0. Salir de The Books!");
 
         respuesta = scInt.nextInt();
     }
@@ -58,7 +66,6 @@ public class Menu {
     }
 
     public void showTopBooks(){
-        Dao dao = new Dao();
         try{
             dao.showTopBooks();
         }catch (Exception e){
@@ -70,7 +77,6 @@ public class Menu {
         System.out.println("Introduce el nombre del libro que deseas consultar: ");
         var nombreBusqueda = scTxt.nextLine();
 
-        Dao dao = new Dao();
         try{
             dao.lookingForBooksByName(nombreBusqueda);
         }catch(InputMismatchException e){
@@ -79,11 +85,18 @@ public class Menu {
     }
 
     public void gettingStatistics(){
-        Dao dao = new Dao();
         try{
             dao.gettingStatistics();
         }catch(Exception e){
             System.out.println("Error (gettingStatistics): "+ e);
+        }
+    }
+
+    public void latestSearches(){
+        try{
+            dao.latestSearches();
+        }catch (Exception e){
+            System.out.println("Error (latestSearches): "+ e);
         }
     }
 }

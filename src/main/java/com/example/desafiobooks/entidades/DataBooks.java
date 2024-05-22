@@ -10,6 +10,7 @@ public record DataBooks(
         @JsonAlias("title") String titulo,
         @JsonAlias("authors") List<DataAuthor> informacionAutor,
         @JsonAlias("languages") List<String> idiomas,
-        @JsonAlias("download_count") Double numeroDescargas
+        @JsonAlias("download_count") Double numeroDescargas,
+        @JsonAlias() List<DataCategories> categoria
 ) {
 }

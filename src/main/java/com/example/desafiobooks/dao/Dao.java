@@ -13,6 +13,8 @@ public class Dao {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatosToClass convierteDatosToClass = new ConvierteDatosToClass();
     private String BASE_URL = "https://gutendex.com/books/";
+    private final AtomicInteger index = new AtomicInteger(1);
+    List<DataBooks> searchedBooks = new ArrayList<>();
 
     //Obtener los datos de la API para manipular en formato json y en formato class
     public Books showDataFromAPI(){
@@ -23,20 +25,17 @@ public class Dao {
     }
 
     //Ver la API como clase Books
-    public Books verAPI(){
+    public void verAPI(){
         var data = consumoAPI.consumirAPI(BASE_URL);
         var dataToClass = convierteDatosToClass.obtenerDatos(data, Books.class);
         System.out.println("*****************************************************");
         System.out.println("Data converted to class Books: ");
         System.out.println(dataToClass);
         System.out.println("*****************************************************");
-
-        return dataToClass;
     }
 
     //Top 10 libros más descargados
     public void showTopBooks(){
-        AtomicInteger index = new AtomicInteger(1); // Inicializamos un AtomicInteger para el índice
         System.out.println("Top 10 libros más descargados");
         showDataFromAPI().informacionLibros().stream()
                 .sorted(Comparator.comparing(DataBooks::numeroDescargas).reversed())
@@ -60,6 +59,7 @@ public class Dao {
         if(searchedBook.isPresent()){
             System.out.println("Libro encontrado en The Books!");
             System.out.println(searchedBook.get());
+            searchedBooks.add(searchedBook.get());
         } else{
             System.out.println("El libro ingresado no se encuentra en The Books :(");
         }
@@ -76,4 +76,17 @@ public class Dao {
         System.out.println("La cantidad mínima de descargas en The Books! es : "+ dse.getMin());
         System.out.println("La cantidad de registros evaluados en The Books! es: "+ dse.getCount());
     }
+
+    // Obtener las ultimas consultas de busqueda
+    public void latestSearches(){
+        System.out.println("Últimas consultas de búsqueda:");
+        if(!searchedBooks.isEmpty()){
+            searchedBooks.forEach(book -> {
+                System.out.println(index.getAndIncrement() + ". "+ book);
+            });
+        } else {
+            System.out.println("No hay búsquedas recientes, consulta algo nuevo :).");
+        }    }
+
+
 }
