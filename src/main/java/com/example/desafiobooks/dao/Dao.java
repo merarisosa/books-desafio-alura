@@ -1,7 +1,8 @@
 package com.example.desafiobooks.dao;
 
-import com.example.desafiobooks.entidades.Books;
-import com.example.desafiobooks.entidades.DataBooks;
+import com.example.desafiobooks.entidades.enums.DataBookshelves;
+import com.example.desafiobooks.entidades.records.Books;
+import com.example.desafiobooks.entidades.records.DataBooks;
 import com.example.desafiobooks.service.ConsumoAPI;
 import com.example.desafiobooks.service.ConvierteDatosToClass;
 
@@ -13,8 +14,8 @@ public class Dao {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatosToClass convierteDatosToClass = new ConvierteDatosToClass();
     private String BASE_URL = "https://gutendex.com/books/";
-    private final AtomicInteger index = new AtomicInteger(1);
     List<DataBooks> searchedBooks = new ArrayList<>();
+
 
     //Obtener los datos de la API para manipular en formato json y en formato class
     public Books showDataFromAPI(){
@@ -29,13 +30,25 @@ public class Dao {
         var data = consumoAPI.consumirAPI(BASE_URL);
         var dataToClass = convierteDatosToClass.obtenerDatos(data, Books.class);
         System.out.println("*****************************************************");
-        System.out.println("Data converted to class Books: ");
+        System.out.println("Data converted to record Books: ");
+        System.out.println(dataToClass);
+        System.out.println("*****************************************************");
+    }
+
+    //Ver libros como clase DataBooks
+    public void verLibrosAsClass(){
+        var data = consumoAPI.consumirAPI(BASE_URL);
+        var dataToClass = convierteDatosToClass.obtenerDatos(data, DataBooks.class);
+        System.out.println("*****************************************************");
+        System.out.println("Data converted to class DataBooks: ");
         System.out.println(dataToClass);
         System.out.println("*****************************************************");
     }
 
     //Top 10 libros más descargados
     public void showTopBooks(){
+        AtomicInteger indexTopBooks = new AtomicInteger(1);
+
         System.out.println("Top 10 libros más descargados");
         showDataFromAPI().informacionLibros().stream()
                 .sorted(Comparator.comparing(DataBooks::numeroDescargas).reversed())
@@ -43,7 +56,7 @@ public class Dao {
                 .map(l -> l.titulo().toUpperCase())
                 .forEach(
                         book -> {
-                        System.out.println(index.getAndIncrement() + ". " + book);
+                        System.out.println(indexTopBooks.getAndIncrement() + ". " + book);
                         });
     }
 
@@ -77,16 +90,64 @@ public class Dao {
         System.out.println("La cantidad de registros evaluados en The Books! es: "+ dse.getCount());
     }
 
-    // Obtener las ultimas consultas de busqueda
+    // Obtener las ultimas consultas de busqueda como record
     public void latestSearches(){
-        System.out.println("Últimas consultas de búsqueda:");
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+
+        System.out.println("Últimas consultas de búsqueda como record:");
         if(!searchedBooks.isEmpty()){
             searchedBooks.forEach(book -> {
-                System.out.println(index.getAndIncrement() + ". "+ book);
+                System.out.println(indexLatestSearches.getAndIncrement() + ". "+ book);
             });
         } else {
             System.out.println("No hay búsquedas recientes, consulta algo nuevo :).");
-        }    }
+        }
+    }
+
+    // Obtener las ultimas consultas de busqueda como clase
+    public void lastestSearchesAsClass(){
+        AtomicInteger indexLatestSearchesAsClass = new AtomicInteger(1);
+
+        verLibrosAsClass();
+        //System.out.println("Últimas consultas de búsqueda como clase:");
+
+    }
+
+    //Buscar libros segun la categoria elegida
+    public void lookingForBooksByCategories(String categoria){
+        AtomicInteger indexBooksByCategories = new AtomicInteger(1);
+        List<DataBooks> filteredBooksByCategorie = new ArrayList<>();
+
+        for (DataBooks book : showDataFromAPI().informacionLibros()) {
+            if (book.bookshelves().contains(categoria)) {
+                filteredBooksByCategorie.add(book);
+            }
+        }
+
+        if(!filteredBooksByCategorie.isEmpty()){
+            System.out.println("Libros de la categoria "+ categoria.toUpperCase() + " hallados en The Books!");
+
+            for(DataBooks dataBooks: filteredBooksByCategorie){
+                System.out.println(indexBooksByCategories.getAndIncrement() + ". "+dataBooks);
+            }
+
+        } else {
+            System.out.println("No existen libros disponibles para la categoria "+ categoria.toUpperCase());
+        }
+    }
+
+    //Muestra las categorias disponibles en el enum
+    public void showAllCategories() {
+        AtomicInteger indexCategories = new AtomicInteger(1);
+
+        System.out.println("Categorias disponibles en The Books!");
+        DataBookshelves[] categorias = DataBookshelves.values();
+
+        for (DataBookshelves categoria : categorias) {
+            System.out.println(indexCategories.getAndIncrement() + ". " + categoria.name() + ": " + categoria.getBookshelves());
+        }
+    }
+
 
 
 }

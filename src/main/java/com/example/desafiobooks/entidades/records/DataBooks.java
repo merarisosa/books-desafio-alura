@@ -1,5 +1,6 @@
-package com.example.desafiobooks.entidades;
+package com.example.desafiobooks.entidades.records;
 
+import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,6 +12,6 @@ public record DataBooks(
         @JsonAlias("authors") List<DataAuthor> informacionAutor,
         @JsonAlias("languages") List<String> idiomas,
         @JsonAlias("download_count") Double numeroDescargas,
-        @JsonAlias() List<DataCategories> categoria
+        @JsonAlias("bookshelves") List<String> bookshelves
 ) {
 }
