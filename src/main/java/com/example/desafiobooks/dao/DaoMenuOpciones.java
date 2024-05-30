@@ -1,71 +1,36 @@
 package com.example.desafiobooks.dao;
 
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
-import com.example.desafiobooks.entidades.records.Books;
+import com.example.desafiobooks.entidades.modelos.DataBooksModel;
 import com.example.desafiobooks.entidades.records.DataBooks;
-import com.example.desafiobooks.service.ConsumoAPI;
-import com.example.desafiobooks.service.ConvierteDatosToClass;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class Dao {
-    private ConsumoAPI consumoAPI = new ConsumoAPI();
-    private ConvierteDatosToClass convierteDatosToClass = new ConvierteDatosToClass();
-    private String BASE_URL = "https://gutendex.com/books/";
+public class DaoMenuOpciones {
     List<DataBooks> searchedBooks = new ArrayList<>();
-
-
-    //Obtener los datos de la API para manipular en formato json y en formato class
-    public Books showDataFromAPI(){
-        var data = consumoAPI.consumirAPI(BASE_URL);
-        var dataToClass = convierteDatosToClass.obtenerDatos(data, Books.class);
-
-        return dataToClass;
-    }
-
-    //Ver la API como clase Books
-    public void verAPI(){
-        var data = consumoAPI.consumirAPI(BASE_URL);
-        var dataToClass = convierteDatosToClass.obtenerDatos(data, Books.class);
-        System.out.println("*****************************************************");
-        System.out.println("Data converted to record Books: ");
-        System.out.println(dataToClass);
-        System.out.println("*****************************************************");
-    }
-
-    //Ver libros como clase DataBooks
-    public void verLibrosAsClass(){
-        var data = consumoAPI.consumirAPI(BASE_URL);
-        var dataToClass = convierteDatosToClass.obtenerDatos(data, DataBooks.class);
-        System.out.println("*****************************************************");
-        System.out.println("Data converted to class DataBooks: ");
-        System.out.println(dataToClass);
-        System.out.println("*****************************************************");
-    }
+    List<DataBooksModel> searchedBooksModel = new ArrayList<>();
+    DaoConsumoAPI dao = new DaoConsumoAPI();
 
     //Top 10 libros más descargados
     public void showTopBooks(){
         AtomicInteger indexTopBooks = new AtomicInteger(1);
 
         System.out.println("Top 10 libros más descargados");
-        showDataFromAPI().informacionLibros().stream()
+        dao.showDataFromAPI().informacionLibros().stream()
                 .sorted(Comparator.comparing(DataBooks::numeroDescargas).reversed())
                 .limit(10)
                 .map(l -> l.titulo().toUpperCase())
                 .forEach(
                         book -> {
-                        System.out.println(indexTopBooks.getAndIncrement() + ". " + book);
+                            System.out.println(indexTopBooks.getAndIncrement() + ". " + book);
                         });
     }
 
-    //Busqueda de libros por nombre
+    //Busqueda de libros por nombre como record
     public void lookingForBooksByName(String nombreBusqueda){
-        var dataJson = consumoAPI.consumirAPI(BASE_URL+"?search="+nombreBusqueda.replace(" ", "+"));
-        var dataBusqueda = convierteDatosToClass.obtenerDatos(dataJson, Books.class);
-
-        Optional<DataBooks> searchedBook = dataBusqueda.informacionLibros().stream()
+        Optional<DataBooks> searchedBook = dao.showDataFromAPI().informacionLibros().stream()
                 .filter(nombre -> nombre.titulo().toUpperCase().contains(nombreBusqueda.toUpperCase()))
                 .findFirst();
 
@@ -80,7 +45,7 @@ public class Dao {
 
     //Trabajando con estadisticas
     public void gettingStatistics(){
-        DoubleSummaryStatistics dse = showDataFromAPI().informacionLibros().stream()
+        DoubleSummaryStatistics dse = dao.showDataFromAPI().informacionLibros().stream()
                 .filter(descargas -> descargas.numeroDescargas() > 0)
                 .collect(Collectors.summarizingDouble(DataBooks::numeroDescargas));
 
@@ -104,21 +69,12 @@ public class Dao {
         }
     }
 
-    // Obtener las ultimas consultas de busqueda como clase
-    public void lastestSearchesAsClass(){
-        AtomicInteger indexLatestSearchesAsClass = new AtomicInteger(1);
-
-        verLibrosAsClass();
-        //System.out.println("Últimas consultas de búsqueda como clase:");
-
-    }
-
     //Buscar libros segun la categoria elegida
     public void lookingForBooksByCategories(String categoria){
         AtomicInteger indexBooksByCategories = new AtomicInteger(1);
         List<DataBooks> filteredBooksByCategorie = new ArrayList<>();
 
-        for (DataBooks book : showDataFromAPI().informacionLibros()) {
+        for (DataBooks book : dao.showDataFromAPI().informacionLibros()) {
             if (book.bookshelves().contains(categoria)) {
                 filteredBooksByCategorie.add(book);
             }
@@ -147,7 +103,4 @@ public class Dao {
             System.out.println(indexCategories.getAndIncrement() + ". " + categoria.name() + ": " + categoria.getBookshelves());
         }
     }
-
-
-
 }

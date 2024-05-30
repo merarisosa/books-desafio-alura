@@ -1,10 +1,9 @@
 package com.example.desafiobooks.principal;
 
-import com.example.desafiobooks.dao.Dao;
+import com.example.desafiobooks.dao.DaoConsumoAPI;
+import com.example.desafiobooks.dao.DaoMenuOpciones;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
 
-import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class Menu {
     boolean flag = false;
     Scanner scInt = new Scanner(System.in);
     Scanner scTxt = new Scanner(System.in);
-    Dao dao = new Dao();
+    DaoMenuOpciones dao = new DaoMenuOpciones();
 
     public void initMenu(){
         do{
@@ -23,22 +22,25 @@ public class Menu {
                     showAPI();
                     break;
                 case 2:
-                    showTopBooks();
+                    showBooksAsClass();
                     break;
                 case 3:
-                    lookingForBooksByName();
+                    showTopBooks();
                     break;
                 case 4:
-                    gettingStatistics();
+                    lookingForBooksByName();
                     break;
                 case 5:
-                    latestSearches();
+                    gettingStatistics();
                     break;
                 case 6:
-                    lookingForBooksByCategories();
+                    latestSearchesAsRecord();
                     break;
                 case 7:
-                    lastestSearchesAsClass();
+                    lookingForBooksByCategories();
+                    break;
+                case 8:
+
                     break;
                 case 0:
                     flag = true;
@@ -55,24 +57,33 @@ public class Menu {
         System.out.println(" ");
         System.out.println("¡Bienvenido a The Books!");
         System.out.println("    Por favor, selecciona una opción del menu");
-        System.out.println("        1. Consulta la API de libros disponibles");
-        System.out.println("        2. Consulta el TOP 10 de libros más descargados");
-        System.out.println("        3. Busca un libro por nombre");
-        System.out.println("        4. Conoce las estadísticas de The Books!");
-        System.out.println("        5. Consulta tu historial de búsquedas como record");
-        System.out.println("        6. Consulta libros por categoria");
-        System.out.println("        7. Consulta tu historial de búsquedas como clase");
+        System.out.println("        1. Consulta la API de libros disponibles como record");
+        System.out.println("        2. Consulta la API de libros disponibles como clase");
+        System.out.println("        3. Consulta el TOP 10 de libros más descargados");
+        System.out.println("        4. Busca un libro por nombre");
+        System.out.println("        5. Conoce las estadísticas de The Books!");
+        System.out.println("        6. Consulta tu historial de búsquedas como record");
+        System.out.println("        7. Consulta libros por categoria");
         System.out.println("        0. Salir de The Books!");
 
         respuesta = scInt.nextInt();
     }
 
     public void showAPI(){
-        Dao dao = new Dao();
+        DaoConsumoAPI dao = new DaoConsumoAPI();
         try{
-            dao.verAPI();
+            dao.showBooksAsRecord();
         }catch (Exception e){
             System.out.println("Error (showDataBooks): "+ e);
+        }
+    }
+
+    public void showBooksAsClass(){
+        DaoConsumoAPI dao = new DaoConsumoAPI();
+        try{
+            dao.showBooksAsClass();
+        }catch (Exception e){
+            System.out.println("Error (showBooksAsClass): "+ e);
         }
     }
 
@@ -103,11 +114,11 @@ public class Menu {
         }
     }
 
-    public void latestSearches(){
+    public void latestSearchesAsRecord(){
         try{
             dao.latestSearches();
         }catch (Exception e){
-            System.out.println("Error (latestSearches): "+ e);
+            System.out.println("Error (latestSearchesAsRecord): "+ e);
         }
     }
 
@@ -131,11 +142,5 @@ public class Menu {
         }
     }
 
-    public void lastestSearchesAsClass(){
-        try{
-            dao.lastestSearchesAsClass();
-        }catch (Exception e){
-            System.out.println("Error (lastestSearchesAsClass): "+ e);
-        }
-    }
+
 }

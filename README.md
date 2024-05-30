@@ -15,3 +15,7 @@ Para la realización de estas operaciones es necesario:
    - **ConvierteDatos clase**: Clase para definir los atributos del modelo.
 3. **Creación de menú principal** para manejo de las consultas.
 4. **Creación de dao** para manejo de las funciones.
+
+
+My API KEY para ChatGPT: 
+   - sk-proj-bShn1MiGa5cLMuNsAoPVT3BlbkFJ4XwhroeCxQ1dJF7O2tHS
