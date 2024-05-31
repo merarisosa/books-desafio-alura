@@ -22,6 +22,10 @@ public class DataBooksModel {
     @Transient
     private List<String> bookshelves;
 
+    public DataBooksModel(){
+
+    }
+
     public DataBooksModel(com.example.desafiobooks.entidades.records.DataBooks dataBooks) {
         this.titulo = dataBooks.titulo();
         this.informacionAutor = dataBooks.informacionAutor();

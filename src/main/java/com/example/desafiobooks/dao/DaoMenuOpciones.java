@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 public class DaoMenuOpciones {
     List<DataBooks> searchedBooks = new ArrayList<>();
     List<DataBooksModel> searchedBooksModel = new ArrayList<>();
+
+    @Autowired
     DaoConsumoAPI dao = new DaoConsumoAPI();
 
     @Autowired
@@ -49,12 +51,9 @@ public class DaoMenuOpciones {
         if(searchedBook.isPresent()){
             System.out.println("Libro encontrado en The Books!");
             System.out.println(searchedBook.get());
-            //searchedBooks.add(searchedBook.get());
+            searchedBooks.add(searchedBook.get());
 
-            //añadiendo los libros a la clase para guardarlos en la bd
-            DataBooks libroRecord = searchedBook.get();
-            DataBooksModel libro = new DataBooksModel(libroRecord);
-            repoDataBooks.save(libro);
+
         } else{
             System.out.println("El libro ingresado no se encuentra en The Books :(");
         }
@@ -99,11 +98,9 @@ public class DaoMenuOpciones {
 
         if(!filteredBooksByCategorie.isEmpty()){
             System.out.println("Libros de la categoria "+ categoria.toUpperCase() + " hallados en The Books!");
-
             for(DataBooks dataBooks: filteredBooksByCategorie){
                 System.out.println(indexBooksByCategories.getAndIncrement() + ". "+dataBooks);
             }
-
         } else {
             System.out.println("No existen libros disponibles para la categoria "+ categoria.toUpperCase());
         }

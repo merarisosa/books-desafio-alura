@@ -1,6 +1,7 @@
 package com.example.desafiobooks.principal;
 
 import com.example.desafiobooks.dao.DaoConsumoAPI;
+import com.example.desafiobooks.dao.DaoDatabaseOptions;
 import com.example.desafiobooks.dao.DaoMenuOpciones;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ public class Menu {
 
     @Autowired
     DaoMenuOpciones dao = new DaoMenuOpciones();
+
+    @Autowired
+    DaoDatabaseOptions daoDatabaseOptions = new DaoDatabaseOptions();
+
+    @Autowired
+    DaoConsumoAPI daoConsumoAPI = new DaoConsumoAPI();
 
     public void initMenu(){
         do{
@@ -45,7 +52,7 @@ public class Menu {
                     lookingForBooksByCategories();
                     break;
                 case 8:
-
+                    lookingForBookToSave();
                     break;
                 case 0:
                     flag = true;
@@ -69,24 +76,25 @@ public class Menu {
         System.out.println("        5. Conoce las estadísticas de The Books!");
         System.out.println("        6. Consulta tu historial de búsquedas como record");
         System.out.println("        7. Consulta libros por categoria");
+        System.out.println("        8. Guardar libros en la bd");
         System.out.println("        0. Salir de The Books!");
 
         respuesta = scInt.nextInt();
     }
 
     public void showAPI(){
-        DaoConsumoAPI dao = new DaoConsumoAPI();
+      //  DaoConsumoAPI dao = new DaoConsumoAPI();
         try{
-            dao.showBooksAsRecord();
+            daoConsumoAPI.showBooksAsRecord();
         }catch (Exception e){
             System.out.println("Error (showDataBooks): "+ e);
         }
     }
 
     public void showBooksAsClass(){
-        DaoConsumoAPI dao = new DaoConsumoAPI();
+       // DaoConsumoAPI dao = new DaoConsumoAPI();
         try{
-            dao.showBooksAsClass();
+            daoConsumoAPI.showBooksAsClass();
         }catch (Exception e){
             System.out.println("Error (showBooksAsClass): "+ e);
         }
@@ -147,5 +155,14 @@ public class Menu {
         }
     }
 
+    public void lookingForBookToSave(){
+        System.out.println("Introduce el nombre del libro que deseas consultar: ");
+        var nombreBusqueda = scTxt.nextLine();
+        try{
+            daoDatabaseOptions.lookingForBookToSave(nombreBusqueda);
+        }catch(InputMismatchException e){
+            System.out.println("Error (lookingForBookToSave): "+ e);
+        }
+    }
 
 }
