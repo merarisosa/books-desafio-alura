@@ -1,18 +1,25 @@
 package com.example.desafiobooks.entidades.modelos;
 
-import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import com.example.desafiobooks.entidades.records.DataAuthor;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import jakarta.persistence.*;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table (name = "data_books")
 public class DataBooksModel {
+   @Id
+   @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long Id;
+   @Column(unique = true)
     private String titulo;
+   @Transient
     private List<DataAuthor> informacionAutor;
+    @Transient
     private List<String> idiomas;
     private Double numeroDescargas;
+    @Transient
     private List<String> temas;
+    @Transient
     private List<String> bookshelves;
 
     public DataBooksModel(com.example.desafiobooks.entidades.records.DataBooks dataBooks) {
@@ -21,14 +28,18 @@ public class DataBooksModel {
         this.idiomas = dataBooks.idiomas();
         this.numeroDescargas = dataBooks.numeroDescargas();
         this.temas = dataBooks.temas();
-        this.bookshelves = dataBooks.bookshelves().stream().toList();
-              /*  bookshelves().stream()
+        this.bookshelves = dataBooks.bookshelves();
+                /*.stream()
                 .map(DataBookshelves::fromString)
-                .collect(Collectors.toList());
-              */
+                .collect(Collectors.toList());*/
     }
 
-    public DataBooksModel(String titulo, List<DataAuthorModel> dataAuthorModels, List<String> idiomas, Double numeroDescargas, List<String> temas, List<String> bookshelves) {
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public String getTitulo() {

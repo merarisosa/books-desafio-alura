@@ -3,15 +3,27 @@ package com.example.desafiobooks.dao;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import com.example.desafiobooks.entidades.modelos.DataBooksModel;
 import com.example.desafiobooks.entidades.records.DataBooks;
-
+import com.example.desafiobooks.repository.BookRepository;
+import com.example.desafiobooks.repository.DataAuthorRepository;
+import com.example.desafiobooks.repository.DataBooksRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Component
 public class DaoMenuOpciones {
     List<DataBooks> searchedBooks = new ArrayList<>();
     List<DataBooksModel> searchedBooksModel = new ArrayList<>();
     DaoConsumoAPI dao = new DaoConsumoAPI();
+
+    @Autowired
+    private DataBooksRepository repoDataBooks;
+    @Autowired
+    private DataAuthorRepository repoAuthor;
+    @Autowired
+    private BookRepository repoBooks;
 
     //Top 10 libros más descargados
     public void showTopBooks(){
@@ -37,7 +49,12 @@ public class DaoMenuOpciones {
         if(searchedBook.isPresent()){
             System.out.println("Libro encontrado en The Books!");
             System.out.println(searchedBook.get());
-            searchedBooks.add(searchedBook.get());
+            //searchedBooks.add(searchedBook.get());
+
+            //añadiendo los libros a la clase para guardarlos en la bd
+            DataBooks libroRecord = searchedBook.get();
+            DataBooksModel libro = new DataBooksModel(libroRecord);
+            repoDataBooks.save(libro);
         } else{
             System.out.println("El libro ingresado no se encuentra en The Books :(");
         }

@@ -3,15 +3,20 @@ package com.example.desafiobooks.principal;
 import com.example.desafiobooks.dao.DaoConsumoAPI;
 import com.example.desafiobooks.dao.DaoMenuOpciones;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+@Component
 public class Menu {
     int respuesta;
     boolean flag = false;
     Scanner scInt = new Scanner(System.in);
     Scanner scTxt = new Scanner(System.in);
+
+    @Autowired
     DaoMenuOpciones dao = new DaoMenuOpciones();
 
     public void initMenu(){
@@ -98,7 +103,6 @@ public class Menu {
     public void lookingForBooksByName(){
         System.out.println("Introduce el nombre del libro que deseas consultar: ");
         var nombreBusqueda = scTxt.nextLine();
-
         try{
             dao.lookingForBooksByName(nombreBusqueda);
         }catch(InputMismatchException e){
@@ -128,6 +132,7 @@ public class Menu {
             dao.showAllCategories();
             var categoria = scTxt.nextLine();
             var comparingValue = DataBookshelves.getNameOfEnum(categoria.toUpperCase().trim());
+            //var comparingValue = DataBookshelves.fromString(categoria);
 
             if (categoria.equalsIgnoreCase(String.valueOf(comparingValue))){
                 dao.lookingForBooksByCategories(comparingValue.getBookshelves());
