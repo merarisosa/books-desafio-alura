@@ -54,6 +54,9 @@ public class Menu {
                 case 8:
                     lookingForBookToSave();
                     break;
+                case 9:
+                    saveAllBooksFromAPI();
+                    break;
                 case 0:
                     flag = true;
                     System.out.println("Gracias por usar The Books!");
@@ -76,7 +79,8 @@ public class Menu {
         System.out.println("        5. Conoce las estadísticas de The Books!");
         System.out.println("        6. Consulta tu historial de búsquedas como record");
         System.out.println("        7. Consulta libros por categoria");
-        System.out.println("        8. Guardar libros en la bd");
+        System.out.println("        8. Busca libro y guarda en la base de datos");
+        System.out.println("        9. Busca todos los libros y los guarda en la base de datos");
         System.out.println("        0. Salir de The Books!");
 
         respuesta = scInt.nextInt();
@@ -162,6 +166,14 @@ public class Menu {
             daoDatabaseOptions.lookingForBookToSave(nombreBusqueda);
         }catch(InputMismatchException e){
             System.out.println("Error (lookingForBookToSave): "+ e);
+        }
+    }
+
+    public void saveAllBooksFromAPI(){
+        try{
+            daoDatabaseOptions.saveAllBooksFromAPI();
+        }catch (Exception e){
+            System.out.println("Error (saveAllBooksFromAPI): "+ e);
         }
     }
 

@@ -20,6 +20,7 @@ public class DaoConsumoAPI {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatosToClass convierteDatosToClass = new ConvierteDatosToClass();
     private String BASE_URL = "https://gutendex.com/books/";
+    List<DataBooksModel> dataBooksModelList = new ArrayList<>();
 
 
     @Autowired
@@ -46,16 +47,11 @@ public class DaoConsumoAPI {
     public void showBooksAsClass(){
        Books dataFromAPI = showDataFromAPI();
        var dataBooksList = dataFromAPI.informacionLibros();
-        List<DataBooksModel> dataBooksModelList = new ArrayList<>();
+
+        dataBooksModelList.clear();
        for (DataBooks dataBooks : dataBooksList) {
            DataBooksModel dataBooksModel = new DataBooksModel(dataBooks);
-           if (repoDataBooks.findByTitulo(dataBooksModel.getTitulo()).isPresent()) {
-               System.out.println("Libro ya registrado en la base de datos: " + dataBooksModel.getTitulo());
-               continue;
-           } else {
-               repoDataBooks.save(dataBooksModel);
-           }
-           //dataBooksModelList.add(dataBooksModel);
+           dataBooksModelList.add(dataBooksModel);
            //repoDataBooks.save(dataBooksModel);
        }
         System.out.println("*****************************************************");

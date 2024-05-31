@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 public class DaoDatabaseOptions {
     @Autowired
     DaoMenuOpciones dao = new DaoMenuOpciones();
-
+    @Autowired
+    DaoConsumoAPI daoAPI = new DaoConsumoAPI();
     @Autowired
     private DataBooksRepository repoDataBooks;
     @Autowired
@@ -20,15 +21,28 @@ public class DaoDatabaseOptions {
     @Autowired
     private BookRepository repoBooks;
 
-    //Buscar serie y guardarla en la base de datos
+    //Guarda all books en la bd
+    public void saveAllBooksFromAPI(){
+        daoAPI.showBooksAsClass();
+        var size = daoAPI.dataBooksModelList.size();
+        for (int i = 0; i < size; i++) {
+            DataBooksModel dataBooksModel = daoAPI.dataBooksModelList.get(i);
+            if (repoDataBooks.findByTitulo(dataBooksModel.getTitulo()).isPresent()) {
+                System.out.println("Libro ya registrado en la base de datos: " + dataBooksModel.getTitulo());
+            } else {
+                repoDataBooks.save(dataBooksModel);
+            }
+        }
+    }
+
+    //Buscar libro y guardarla en la base de datos
     public void lookingForBookToSave(String nombre){
         dao.lookingForBooksByName(nombre);
-
         DataBooks recordBook = dao.searchedBooks.get(0);
         DataBooksModel book = new DataBooksModel(recordBook);
-
         repoDataBooks.save(book);
     }
+
     //Buscar episodios y guardarlo en la base de datos
 
     //Mostrar todas las series buscadas
