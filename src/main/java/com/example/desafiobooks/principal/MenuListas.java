@@ -1,7 +1,6 @@
 package com.example.desafiobooks.principal;
 
 import com.example.desafiobooks.dao.DaoConsumoAPI;
-import com.example.desafiobooks.dao.DaoDatabaseOptions;
 import com.example.desafiobooks.dao.DaoMenuOpciones;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 @Component
-public class Menu {
+public class MenuListas {
     int respuesta;
     boolean flag = false;
     Scanner scInt = new Scanner(System.in);
@@ -19,10 +18,6 @@ public class Menu {
 
     @Autowired
     DaoMenuOpciones dao = new DaoMenuOpciones();
-
-    @Autowired
-    DaoDatabaseOptions daoDatabaseOptions = new DaoDatabaseOptions();
-
     @Autowired
     DaoConsumoAPI daoConsumoAPI = new DaoConsumoAPI();
 
@@ -52,10 +47,8 @@ public class Menu {
                     lookingForBooksByCategories();
                     break;
                 case 8:
-                    lookingForBookToSave();
                     break;
                 case 9:
-                    saveAllBooksFromAPI();
                     break;
                 case 0:
                     flag = true;
@@ -79,9 +72,7 @@ public class Menu {
         System.out.println("        5. Conoce las estadísticas de The Books!");
         System.out.println("        6. Consulta tu historial de búsquedas como record");
         System.out.println("        7. Consulta libros por categoria");
-        System.out.println("        8. Busca libro y guarda en la base de datos");
-        System.out.println("        9. Busca todos los libros y los guarda en la base de datos");
-        System.out.println("        0. Salir de The Books!");
+        System.out.println("        0. Regresar al menú principal");
 
         respuesta = scInt.nextInt();
     }
@@ -144,7 +135,6 @@ public class Menu {
             dao.showAllCategories();
             var categoria = scTxt.nextLine();
             var comparingValue = DataBookshelves.getNameOfEnum(categoria.toUpperCase().trim());
-            //var comparingValue = DataBookshelves.fromString(categoria);
 
             if (categoria.equalsIgnoreCase(String.valueOf(comparingValue))){
                 dao.lookingForBooksByCategories(comparingValue.getBookshelves());
@@ -158,23 +148,4 @@ public class Menu {
             System.out.println("Error (lookingForBooksByCategories): " + e);
         }
     }
-
-    public void lookingForBookToSave(){
-        System.out.println("Introduce el nombre del libro que deseas consultar: ");
-        var nombreBusqueda = scTxt.nextLine();
-        try{
-            daoDatabaseOptions.lookingForBookToSave(nombreBusqueda);
-        }catch(InputMismatchException e){
-            System.out.println("Error (lookingForBookToSave): "+ e);
-        }
-    }
-
-    public void saveAllBooksFromAPI(){
-        try{
-            daoDatabaseOptions.saveAllBooksFromAPI();
-        }catch (Exception e){
-            System.out.println("Error (saveAllBooksFromAPI): "+ e);
-        }
-    }
-
 }

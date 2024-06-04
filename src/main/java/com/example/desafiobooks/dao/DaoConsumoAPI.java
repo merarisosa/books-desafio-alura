@@ -48,11 +48,10 @@ public class DaoConsumoAPI {
        Books dataFromAPI = showDataFromAPI();
        var dataBooksList = dataFromAPI.informacionLibros();
 
-        dataBooksModelList.clear();
+       dataBooksModelList.clear();
        for (DataBooks dataBooks : dataBooksList) {
            DataBooksModel dataBooksModel = new DataBooksModel(dataBooks);
            dataBooksModelList.add(dataBooksModel);
-           //repoDataBooks.save(dataBooksModel);
        }
         System.out.println("*****************************************************");
         System.out.println("Data converted to class Books: ");

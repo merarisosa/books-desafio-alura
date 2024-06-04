@@ -8,6 +8,9 @@ import com.example.desafiobooks.repository.DataBooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Component
 public class DaoDatabaseOptions {
     @Autowired
@@ -40,10 +43,27 @@ public class DaoDatabaseOptions {
         dao.lookingForBooksByName(nombre);
         DataBooks recordBook = dao.searchedBooks.get(0);
         DataBooksModel book = new DataBooksModel(recordBook);
-        repoDataBooks.save(book);
+        if(repoDataBooks.findByTitulo(recordBook.titulo()).isPresent()){
+            System.out.println("El libro "+ book.getTitulo()+ " ya ha sido añadido a la base de datos");
+        }else{
+            repoDataBooks.save(book);
+        }
     }
 
-    //Buscar episodios y guardarlo en la base de datos
+    //Buscar las ultimas inserciones de busqueda en la bd
+    public void latestSearchesAsDatabase(){
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+        List<DataBooksModel> allBooks = repoDataBooks.findAll();
+
+        System.out.println("Últimas consultas en la base de datos:");
+        if(!allBooks.isEmpty()){
+            allBooks.forEach(book -> {
+                System.out.println(indexLatestSearches.getAndIncrement() + ". "+ book);
+            });
+        } else {
+            System.out.println("No hay búsquedas recientes en la base de datos, consulta algo nuevo :).");
+        }
+    }
 
     //Mostrar todas las series buscadas
 
