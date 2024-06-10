@@ -11,7 +11,7 @@ public class BooksModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Transient
+    @OneToMany(mappedBy = "libreria")
     private List<DataBooksModel> informacionLibros;
 
     public BooksModel(List<DataBooksModel> informacionLibros) {

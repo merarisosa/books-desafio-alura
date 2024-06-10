@@ -41,8 +41,10 @@ public class MenuDB {
                     latestSearchesAsDatabase();
                     break;
                 case 5:
+                    searchTopBooks();
                     break;
                 case 6:
+                    lookingForBooksByCategorie();
                     break;
                 case 7:
                     break;
@@ -70,8 +72,8 @@ public class MenuDB {
         System.out.println("        2. Guarda la lista de libros en la base de datos");
         System.out.println("        3. Consulta un libro y guardalo en la base de datos");
         System.out.println("        4. Consulta las últimas búsquedas que has realizado en la base de datos");
-        System.out.println("        5.  ");
-        System.out.println("        6.  ");
+        System.out.println("        5. Consulta el TOP 5 de libros con más descargas ");
+        System.out.println("        6. Consulta libros por categoria ");
         System.out.println("        7.  ");
         System.out.println("        8.  ");
         System.out.println("        9. Elimina todos los registros de la base de datos");
@@ -107,10 +109,29 @@ public class MenuDB {
     }
 
     public void latestSearchesAsDatabase(){
+        System.out.println("TOP 5 de libros más descargados");
         try{
             daoDatabaseOptions.latestSearchesAsDatabase();
         }catch (Exception e){
             System.out.println("Error (latestSearchesAsDatabase): "+ e);
+        }
+    }
+
+    public void searchTopBooks(){
+        try{
+            daoDatabaseOptions.searchTopBooks();
+        }catch (Exception e){
+            System.out.println("Error (searchTopBooks): "+ e);
+        }
+    }
+
+    public void lookingForBooksByCategorie(){
+        System.out.println("Escriba la categoria de la cual desea buscar un libro");
+        var categoria = scTxt.nextLine();
+        try{
+            daoDatabaseOptions.lookingForBooksByCategorie(categoria);
+        }catch (Exception e){
+            System.out.println("Error (lookingForBooksByCategorie): "+ e);
         }
     }
 
