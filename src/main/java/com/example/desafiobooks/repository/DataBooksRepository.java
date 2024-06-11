@@ -3,6 +3,7 @@ package com.example.desafiobooks.repository;
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
 import com.example.desafiobooks.entidades.modelos.DataBooksModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.xml.crypto.Data;
@@ -18,4 +19,8 @@ public interface DataBooksRepository extends JpaRepository<DataBooksModel, Long>
 
     //encontrar segun categorias
     List<DataBooksModel> findByBookshelves(DataBookshelves dataBookshelves);
+
+    //encontrar libros por nombre
+    @Query("SELECT l FROM DataBooksModel l WHERE l.titulo ILIKE %:nombreLibro%")
+    List<DataBooksModel> librosPorNombre(String nombreLibro);
 }

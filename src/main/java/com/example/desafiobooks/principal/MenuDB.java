@@ -47,6 +47,7 @@ public class MenuDB {
                     lookingForBooksByCategorie();
                     break;
                 case 7:
+                    lookingForBooks();
                     break;
                 case 8:
                     break;
@@ -74,7 +75,7 @@ public class MenuDB {
         System.out.println("        4. Consulta las últimas búsquedas que has realizado en la base de datos");
         System.out.println("        5. Consulta el TOP 5 de libros con más descargas ");
         System.out.println("        6. Consulta libros por categoria ");
-        System.out.println("        7.  ");
+        System.out.println("        7. Consulta un libro por nombre ");
         System.out.println("        8.  ");
         System.out.println("        9. Elimina todos los registros de la base de datos");
         System.out.println("        0. Regresar al menú principal");
@@ -135,6 +136,15 @@ public class MenuDB {
         }
     }
 
+    public void lookingForBooks(){
+        System.out.println("Ingrese el nombre del libro a consultar");
+        var nombreLibro = scTxt.next();
+        try{
+            daoDatabaseOptions.lookingForBooks(nombreLibro);
+        }catch(Exception e){
+            System.out.println("Error (lookingForBooks): "+ e);
+        }
+    }
     public void deleteAllDatabase(){
 
     }

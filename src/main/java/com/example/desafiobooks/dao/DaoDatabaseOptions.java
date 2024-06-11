@@ -133,7 +133,6 @@ public class DaoDatabaseOptions {
     public void lookingForBooksByCategorie(String categoria){
         AtomicInteger indexLatestSearches = new AtomicInteger(1);
 
-        // Convertir la categoría del español al enum correspondiente
         DataBookshelves categorieToEnum;
         try {
             categorieToEnum = DataBookshelves.fromSpanish(categoria);
@@ -156,7 +155,19 @@ public class DaoDatabaseOptions {
 
         //Filtrar series por el número de temporadas y su evaluación
 
-        //Buscar episodios por nombre
+        //Buscar libros por nombre
+        public void lookingForBooks(String nombreLibro){
+            AtomicInteger indexLatestSearches = new AtomicInteger(1);
+            List<DataBooksModel> librosBuscados = repoDataBooks.librosPorNombre(nombreLibro);
+
+            if(librosBuscados.isEmpty()){
+                System.out.println("No existen libros en la base de datos con el nombre "+nombreLibro.toUpperCase());
+            }else{
+                System.out.println("Libros que coinciden con el nombre de búsqueda");
+                librosBuscados.forEach(l ->
+                        System.out.println(indexLatestSearches.getAndIncrement() + ". " + l.getTitulo()));
+            }
+        }
 
         //Top 5 episodios por serie
 
