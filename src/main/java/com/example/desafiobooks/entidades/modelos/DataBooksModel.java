@@ -161,18 +161,18 @@ public class DataBooksModel {
         this.bookshelves = bookshelves;
     }
 
-
-
     @Override
     public String toString() {
-        return "DataBooks as class{" +
-                "titulo='" + titulo + '\'' +
-                ", informacionAutor=" + informacionAutor +
-                ", idiomas=" + idiomas +
-                ", numeroDescargas=" + numeroDescargas +
-                ", bookshelfs=" + bookshelves +
-                ", temas=" + temas +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("*** LIBRO ***\n");
+        sb.append("Titulo: ").append(titulo).append("\n");
+        sb.append("Información Autor: ").append(informacionAutor).append("\n");
+        sb.append("Idiomas: ").append(idiomas).append("\n");
+        sb.append("No. Descargas: ").append(numeroDescargas).append("\n");
+        sb.append("Bookshelves: ").append(bookshelves).append("\n");
+        sb.append("Temas: ").append(temas).append("\n");
+        sb.append("*************");
+        return sb.toString();
     }
 }
 

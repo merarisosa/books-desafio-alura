@@ -12,7 +12,11 @@ public class DataAuthorModel {
     @Column(unique = true, nullable = false)
     private String nombre;
 
+    @Column
     private String fechaNacimiento;
+
+    @Column
+    private String fechaMuerte;
 
     @ManyToOne //muchos autores pertenecen a un libro
     @JoinColumn(name = "libro_id")
@@ -21,15 +25,17 @@ public class DataAuthorModel {
     public DataAuthorModel() {
     }
 
-    public DataAuthorModel(String nombre, String fechaNacimiento) {
+    public DataAuthorModel(String nombre, String fechaNacimiento, String fechaMuerte) {
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
+        this.fechaMuerte = fechaMuerte;
     }
 
-    public DataAuthorModel(Long id, String nombre, String fechaNacimiento) {
+    public DataAuthorModel(Long id, String nombre, String fechaNacimiento, String fechaMuerte) {
         Id = id;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
+        this.fechaMuerte = fechaMuerte;
     }
 
     public DataBooksModel getLibro() {
@@ -64,11 +70,20 @@ public class DataAuthorModel {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public String getFechaMuerte() {
+        return fechaMuerte;
+    }
+
+    public void setFechaMuerte(String fechaMuerte) {
+        this.fechaMuerte = fechaMuerte;
+    }
+
     @Override
     public String toString() {
         return "DataAuthor as class{" +
-                "nombre='" + nombre + '\'' +
-                ", fechaNacimiento='" + fechaNacimiento + '\'' +
+                "\nnombre= " + nombre +
+                "\nfechaNacimiento= " + fechaNacimiento +
+                "\nfechaMuerte= " + fechaMuerte +
                 '}';
     }
 
@@ -76,6 +91,7 @@ public class DataAuthorModel {
         DataAuthorModel authorModel = new DataAuthorModel();
         authorModel.setNombre(dataAuthor.nombre());
         authorModel.setFechaNacimiento(dataAuthor.fechaNacimiento());
+        authorModel.setFechaMuerte(dataAuthor.fechaMuerte());
         //authorModel.setLibro();
         //authorModel.setId();
         return authorModel;

@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Component
 public class DaoMenuOpciones {
     List<DataBooks> searchedBooks = new ArrayList<>();
@@ -85,24 +87,38 @@ public class DaoMenuOpciones {
         }
     }
 
-    //Buscar libros segun la categoria elegida
+    // Buscar libros según la categoría elegida
     public void lookingForBooksByCategories(String categoria){
         AtomicInteger indexBooksByCategories = new AtomicInteger(1);
         List<DataBooks> filteredBooksByCategorie = new ArrayList<>();
+        List<DataBooks> booksFromAPI = dao.showDataFromAPI().informacionLibros();
+        DataBookshelves categorieToEnum;
 
-        for (DataBooks book : dao.showDataFromAPI().informacionLibros()) {
-            if (book.bookshelves().contains(categoria)) {
+        try {
+            categorieToEnum = DataBookshelves.fromSpanish(categoria);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Categoría no válida: " + categoria);
+            return;
+        }
+
+        if (booksFromAPI == null) {
+            System.out.println("No se pudieron obtener los libros de la API.");
+            return;
+        }
+
+        for (DataBooks book : booksFromAPI) {
+            if (book.bookshelves().contains(categorieToEnum.getBookshelves())) {
                 filteredBooksByCategorie.add(book);
             }
         }
 
-        if(!filteredBooksByCategorie.isEmpty()){
-            System.out.println("Libros de la categoria "+ categoria.toUpperCase() + " hallados en The Books!");
-            for(DataBooks dataBooks: filteredBooksByCategorie){
-                System.out.println(indexBooksByCategories.getAndIncrement() + ". "+dataBooks);
+        if (!filteredBooksByCategorie.isEmpty()) {
+            System.out.println("Libros de la categoría " + categoria.toUpperCase() + " hallados en The Books!");
+            for (DataBooks dataBooks : filteredBooksByCategorie) {
+                System.out.println(indexBooksByCategories.getAndIncrement() + ". " + dataBooks.titulo());
             }
         } else {
-            System.out.println("No existen libros disponibles para la categoria "+ categoria.toUpperCase());
+            System.out.println("No existen libros disponibles para la categoría " + categoria.toUpperCase());
         }
     }
 
@@ -114,7 +130,7 @@ public class DaoMenuOpciones {
         DataBookshelves[] categorias = DataBookshelves.values();
 
         for (DataBookshelves categoria : categorias) {
-            System.out.println(indexCategories.getAndIncrement() + ". " + categoria.name() + ": " + categoria.getBookshelves());
+            System.out.println(indexCategories.getAndIncrement() + ". " + categoria.getCategorieSpanish());
         }
     }
 }

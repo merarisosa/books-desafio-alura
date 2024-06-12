@@ -3,9 +3,11 @@ package com.example.desafiobooks.principal;
 import com.example.desafiobooks.dao.DaoConsumoAPI;
 import com.example.desafiobooks.dao.DaoDatabaseOptions;
 import com.example.desafiobooks.dao.DaoMenuOpciones;
+import com.example.desafiobooks.repository.DataBooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 @Component
@@ -24,34 +26,55 @@ public class MenuDB {
     @Autowired
     DaoConsumoAPI daoConsumoAPI = new DaoConsumoAPI();
 
+    @Autowired
+    private DataBooksRepository repoDataBooks;
+
     public void initMenu(){
         do{
             showMenu();
             switch (respuesta){
                 case 1:
+                    //mostrar API
                     showAPI();
                     break;
                 case 2:
+                    //guardar libros de la API a la bd masivamente
                     saveAllBooksFromAPI();
                     break;
                 case 3:
+                    //guardar libros de la API a la bd inidividualmente
                     lookingForBookToSave();
                     break;
                 case 4:
+                    //ultimos registros en la bd
                     latestSearchesAsDatabase();
                     break;
                 case 5:
+                    //busca el top 5 de libros más descargados
                     searchTopBooks();
                     break;
                 case 6:
+                    //busca libros por categoria
                     lookingForBooksByCategorie();
                     break;
                 case 7:
+                    //busca libros por nombre
                     lookingForBooks();
                     break;
                 case 8:
+                    //listar autores registrados
+                    showRegisteredAuthors();
                     break;
                 case 9:
+                    //listar autores vivos en un determinado año
+                    showAuthorsAlive();
+                    break;
+                case 10:
+                    //listar libros por idioma
+                    showBooksByLanguage();
+                    break;
+                case 11:
+                    //borra toda la database
                     deleteAllDatabase();
                     break;
                 case 0:
@@ -76,8 +99,10 @@ public class MenuDB {
         System.out.println("        5. Consulta el TOP 5 de libros con más descargas ");
         System.out.println("        6. Consulta libros por categoria ");
         System.out.println("        7. Consulta un libro por nombre ");
-        System.out.println("        8.  ");
-        System.out.println("        9. Elimina todos los registros de la base de datos");
+        System.out.println("        8. Consulta los autores registrados ");
+        System.out.println("        9. Consulta los autores vivos en un determinado año ");
+        System.out.println("        10. Consulta libros por idioma ");
+        System.out.println("        11. Elimina todos los registros de la base de datos");
         System.out.println("        0. Regresar al menú principal");
 
         respuesta = scInt.nextInt();
@@ -127,6 +152,8 @@ public class MenuDB {
     }
 
     public void lookingForBooksByCategorie(){
+        DaoMenuOpciones dao = new DaoMenuOpciones();
+        dao.showAllCategories();
         System.out.println("Escriba la categoria de la cual desea buscar un libro");
         var categoria = scTxt.nextLine();
         try{
@@ -145,8 +172,54 @@ public class MenuDB {
             System.out.println("Error (lookingForBooks): "+ e);
         }
     }
-    public void deleteAllDatabase(){
 
+    public void showRegisteredAuthors(){
+        try{
+            daoDatabaseOptions.showRegisteredAuthors();
+        }catch(Exception e){
+            System.out.println("Error (showRegisteredAuthors): "+ e);
+        }
+    }
+
+    public void showAuthorsAlive() {
+        System.out.println("*************************************");
+        System.out.println("Consulte autores dados ciertos años");
+        System.out.println("*************************************");
+
+        System.out.println("Ingrese el año de inicio: ");
+        var dateInicio = scTxt.nextLine();
+        System.out.println("Ingrese el año fin: ");
+        var dateFin = scTxt.nextLine();
+
+        try {
+            daoDatabaseOptions.showAuthorsAlive(dateInicio, dateFin);
+        } catch (Exception e) {
+            System.out.println("Error (showAuthorsAlive): " + e);
+        }
+    }
+
+    public void showBooksByLanguage() {
+        System.out.println("Idiomas registrados en la base de datos");
+        List<String> idiomas = repoDataBooks.findDistinctIdiomas();
+        idiomas.forEach(System.out::println);
+
+        System.out.println("Escribe el nombre del idioma a consultar: ");
+        var idioma = scTxt.nextLine();
+
+        try {
+            daoDatabaseOptions.showBooksByLanguage(idioma);
+        } catch (Exception e) {
+            System.out.println("Error (showBooksByLanguage): " + e);
+        }
+    }
+
+    public void deleteAllDatabase() {
+        try {
+            daoDatabaseOptions.deleteAllDatabase();
+            System.out.println("Base de datos eliminada");
+        } catch (Exception e) {
+            System.out.println("Error (deleteAllDatabase): " + e);
+        }
     }
 
 }

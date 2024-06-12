@@ -131,16 +131,16 @@ public class MenuListas {
 
     public void lookingForBooksByCategories(){
         try{
-            System.out.println("Escribe el nombre de la categoria que deseas visualizar (Ej: HORROR): ");
+            System.out.println("Escribe el nombre de la categoria que deseas visualizar (Ej: Juegos): ");
             dao.showAllCategories();
             var categoria = scTxt.nextLine();
-            var comparingValue = DataBookshelves.getNameOfEnum(categoria.toUpperCase().trim());
+           // var comparingValue = DataBookshelves.getNameOfEnum(categoria.toUpperCase().trim());
 
-            if (categoria.equalsIgnoreCase(String.valueOf(comparingValue))){
-                dao.lookingForBooksByCategories(comparingValue.getBookshelves());
-            } else {
-                System.out.println("Categoría inválida. Por favor, intente nuevamente.");
-            }
+            //if (categoria.equalsIgnoreCase(String.valueOf(comparingValue))){
+                dao.lookingForBooksByCategories(categoria);
+            //} else {
+                //System.out.println("Categoría inválida. Por favor, intente nuevamente.");
+            //}
 
         } catch (InputMismatchException e) {
             System.out.println("Error: Ingresa un número válido para la categoría.");

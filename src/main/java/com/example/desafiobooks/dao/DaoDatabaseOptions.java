@@ -1,7 +1,6 @@
 package com.example.desafiobooks.dao;
 
 import com.example.desafiobooks.entidades.enums.DataBookshelves;
-import com.example.desafiobooks.entidades.modelos.BooksModel;
 import com.example.desafiobooks.entidades.modelos.DataAuthorModel;
 import com.example.desafiobooks.entidades.modelos.DataBooksModel;
 import com.example.desafiobooks.entidades.records.DataBooks;
@@ -12,7 +11,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -37,8 +35,6 @@ public class DaoDatabaseOptions {
         var size = daoAPI.dataBooksModelList.size();
         for (int i = 0; i < size; i++) {
             DataBooksModel book = daoAPI.dataBooksModelList.get(i);
-
-            // Verificar si el libro ya está en la base de datos
             if (repoDataBooks.findByTitulo(book.getTitulo()).isPresent()) {
                 System.out.println("Libro ya registrado en la base de datos: " + book.getTitulo());
                 continue;
@@ -63,76 +59,48 @@ public class DaoDatabaseOptions {
         return repoAuthor.findByNombre(author.getNombre())
                 .orElseGet(() -> repoAuthor.save(author));
     }
-    /*public void saveAllBooksFromAPI(){
-        daoAPI.showBooksAsClass();
-        var size = daoAPI.dataBooksModelList.size();
-        for (int i = 0; i < size; i++) {
-            DataBooksModel dataBooksModel = daoAPI.dataBooksModelList.get(i);
-            //validando que si un libro no se encuentra en las categorias del enum, lo omita
-         /*   if(!dataBooksModel.isShelveRepeated()) {
-                System.out.println("Libro con categorías desconocidas, omitido: " + dataBooksModel.getTitulo());
-                continue;
-            }
-            if (repoDataBooks.findByTitulo(dataBooksModel.getTitulo()).isPresent()) {
-                System.out.println("Libro ya registrado en la base de datos: " + dataBooksModel.getTitulo());
-            } else {
-                if(dataBooksModel.getInformacionAutor().contains(repoDataBooks.findByTitulo(dataBooksModel.getInformacionAutor().toString()))){
-                    //asignar al repoDataBooks el autor y guardar
-                    repoDataBooks.save(dataBooksModel);
-                    System.out.println("Libro guardado en la base de datos: " + dataBooksModel.getTitulo());
 
-
-                }
-            }
+    //Buscar libro y guardarla en la base de datos
+    public void lookingForBookToSave(String nombre) {
+        dao.lookingForBooksByName(nombre);
+        DataBooks recordBook = dao.searchedBooks.get(0);
+        DataBooksModel book = new DataBooksModel(recordBook);
+        if (repoDataBooks.findByTitulo(recordBook.titulo()).isPresent()) {
+            System.out.println("El libro " + book.getTitulo() + " ya ha sido añadido a la base de datos");
+        } else {
+            repoDataBooks.save(book);
         }
-    }*/
+    }
 
-        //Buscar libro y guardarla en la base de datos
-        public void lookingForBookToSave (String nombre){
-            dao.lookingForBooksByName(nombre);
-            DataBooks recordBook = dao.searchedBooks.get(0);
-            DataBooksModel book = new DataBooksModel(recordBook);
-            if (repoDataBooks.findByTitulo(recordBook.titulo()).isPresent()) {
-                System.out.println("El libro " + book.getTitulo() + " ya ha sido añadido a la base de datos");
-            } else {
-                repoDataBooks.save(book);
-            }
-        }
-
-        //Buscar las ultimas inserciones de busqueda en la bd
-        @Transactional
-        public void latestSearchesAsDatabase () {
-            AtomicInteger indexLatestSearches = new AtomicInteger(1);
-            List<DataBooksModel> allBooks = repoDataBooks.findAll();
-
-            System.out.println("Últimas consultas en la base de datos:");
-            if (!allBooks.isEmpty()) {
-                allBooks.forEach(book -> {
-                    System.out.println(indexLatestSearches.getAndIncrement() + ". " + book);
-                });
-            } else {
-                System.out.println("No hay búsquedas recientes en la base de datos, consulta algo nuevo :).");
-            }
-        }
-
-        //Mostrar todas las series buscadas
-
-        //Buscar series por título
-    //Top 5 mejores libros
-    public void searchTopBooks(){
+    //Buscar las ultimas inserciones de busqueda en la bd
+    @Transactional
+    public void latestSearchesAsDatabase() {
         AtomicInteger indexLatestSearches = new AtomicInteger(1);
-        List<DataBooksModel>  topBooks = repoDataBooks.findTop5ByOrderByNumeroDescargasDesc();
+        List<DataBooksModel> allBooks = repoDataBooks.findAll();
+
+        System.out.println("Últimas consultas en la base de datos:");
+        if (!allBooks.isEmpty()) {
+            allBooks.forEach(book -> {
+                System.out.println(indexLatestSearches.getAndIncrement() + ". " + book);
+            });
+        } else {
+            System.out.println("No hay búsquedas recientes en la base de datos, consulta algo nuevo :).");
+        }
+    }
+
+    //Top 5 mejores libros
+    public void searchTopBooks() {
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+        List<DataBooksModel> topBooks = repoDataBooks.findTop5ByOrderByNumeroDescargasDesc();
         topBooks.forEach(book ->
                 System.out.println(indexLatestSearches.getAndIncrement()
-                        +". Libro: " + book.getTitulo()
+                        + ". Libro: " + book.getTitulo()
                         + " --> Num. Descargas: " + book.getNumeroDescargas()));
     }
 
-
-        //Buscar series por categorías
-    public void lookingForBooksByCategorie(String categoria){
+    //Buscar series por categorías
+    public void lookingForBooksByCategorie(String categoria) {
         AtomicInteger indexLatestSearches = new AtomicInteger(1);
-
         DataBookshelves categorieToEnum;
         try {
             categorieToEnum = DataBookshelves.fromSpanish(categoria);
@@ -142,7 +110,6 @@ public class DaoDatabaseOptions {
         }
 
         List<DataBooksModel> libros = repoDataBooks.findByBookshelves(categorieToEnum);
-
         if (libros.isEmpty()) {
             System.out.println("No hay libros en la categoría " + categoria + ". Guarda libros en tu biblioteca :)");
         } else {
@@ -153,22 +120,62 @@ public class DaoDatabaseOptions {
         }
     }
 
-        //Filtrar series por el número de temporadas y su evaluación
+    //Buscar libros por nombre
+    public void lookingForBooks(String nombreLibro) {
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+        List<DataBooksModel> librosBuscados = repoDataBooks.librosPorNombre(nombreLibro);
 
-        //Buscar libros por nombre
-        public void lookingForBooks(String nombreLibro){
-            AtomicInteger indexLatestSearches = new AtomicInteger(1);
-            List<DataBooksModel> librosBuscados = repoDataBooks.librosPorNombre(nombreLibro);
+        if (librosBuscados.isEmpty()) {
+            System.out.println("No existen libros en la base de datos con el nombre " + nombreLibro.toUpperCase());
+        } else {
+            System.out.println("Libros que coinciden con el nombre de búsqueda");
+            librosBuscados.forEach(l ->
+                    System.out.println(indexLatestSearches.getAndIncrement() + ". " + l.getTitulo()));
+        }
+    }
 
-            if(librosBuscados.isEmpty()){
-                System.out.println("No existen libros en la base de datos con el nombre "+nombreLibro.toUpperCase());
-            }else{
-                System.out.println("Libros que coinciden con el nombre de búsqueda");
-                librosBuscados.forEach(l ->
-                        System.out.println(indexLatestSearches.getAndIncrement() + ". " + l.getTitulo()));
+    //busca libros segun el idioma
+    public void showBooksByLanguage(String idioma) {
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+        List<DataBooksModel> librosByLanguage = repoDataBooks.findByIdiomas(idioma);
+        librosByLanguage.forEach(i -> System.out.println(indexLatestSearches.getAndIncrement() + "." + i.getTitulo().replace(",", " ")));
+    }
+
+    //muestra los autores vivos en un determinado año
+    public void showAuthorsAlive(String nacimiento, String muerte) {
+        AtomicInteger indexLatestSearches = new AtomicInteger(1);
+        List<DataAuthorModel> autoresVivos = repoAuthor.findByFechaAlive(nacimiento, muerte);
+
+        if (autoresVivos.isEmpty()) {
+            System.out.println("No existen autores en el año brindado");
+        } else {
+            autoresVivos.forEach(a ->
+                    System.out.println(indexLatestSearches.getAndIncrement() + ". " + a.getNombre()));
+        }
+    }
+
+    //busca el listado de autores en la bd
+    public void showRegisteredAuthors() {
+        List<DataAuthorModel> autores = repoAuthor.findAll();
+
+        if (autores.isEmpty()) {
+            System.out.println("No existen autores registrados en la base de datos");
+        } else {
+            for (int i = 0; i < autores.size(); i++) {
+                System.out.println("--- Autor ---");
+                System.out.println("Nombre: " + autores.get(i).getNombre());
+                System.out.println("Fecha de nacimiento: " + autores.get(i).getFechaNacimiento());
+                System.out.println("Fecha de muerte: " + autores.get(i).getFechaMuerte());
+                System.out.println("-------------");
             }
         }
-
-        //Top 5 episodios por serie
-
     }
+
+    //borra toda la base de datos
+    public void deleteAllDatabase() {
+        repoDataBooks.deleteAll();
+        repoAuthor.deleteAll();
+        repoBooks.deleteAll();
+    }
+
+}

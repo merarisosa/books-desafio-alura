@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +22,13 @@ public interface DataBooksRepository extends JpaRepository<DataBooksModel, Long>
     //encontrar libros por nombre
     @Query("SELECT l FROM DataBooksModel l WHERE l.titulo ILIKE %:nombreLibro%")
     List<DataBooksModel> librosPorNombre(String nombreLibro);
+
+ //   @Query("SELECT DISTINCT i.nombre FROM Idioma i")
+   // List<String> findDistinctIdiomas();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT * FROM idiomas")
+    List<String> findDistinctIdiomas();
+
+    List<DataBooksModel> findByIdiomas(String idioma);
+
 }

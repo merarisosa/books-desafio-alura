@@ -28,8 +28,8 @@ public class BooksModel {
 
     @Override
     public String toString() {
-        return "Books as class{" +
-                "informacionLibros=" + informacionLibros +
-                '}';
+        return "**** LIBRO ****" +
+                "\nInformación: " + informacionLibros +
+                "***************";
     }
 }
